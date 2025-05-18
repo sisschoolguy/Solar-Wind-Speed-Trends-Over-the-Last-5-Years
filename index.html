@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Wind Speed Trends (2020-2024)</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            box-sizing: border-box;
+        }
+
+        body.dark-mode {
+            background-color: #1e1e1e;
+            color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.5s ease;
+        }
+
+        .container.dark-mode {
+            background-color: #2c2c2c;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #3498db;
+            margin-bottom: 20px;
+            animation: fadeIn 2s ease-in-out;
+            transition: color 0.5s ease;
+        }
+
+        h1.dark-mode {
+            color: #db5534;
+        }
+
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to{
+                opacity: 1;
+            }
+        }
+
+        #solarWindChart {
+            width: 100%;
+            max-height: 400px;
+            margin-bottom: 20px;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        #solarWindChart:hover {
+             transform: scale(1.02);
+        }
+
+        .data-source {
+            font-size: 0.8em;
+            color: #777;
+            margin-top: 15px;
+            text-align: center;
+            transition: color 0.5s ease;
+        }
+
+        .data-source.dark-mode {
+            color: #999;
+        }
+
+        .description {
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: justify;
+            transition: color 0.5s ease;
+        }
+
+        .description.dark-mode {
+            color: #ddd;
+        }
+
+        .explanation {
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: justify;
+            transition: color 0.5s ease;
+        }
+
+        .explanation.dark-mode {
+            color: #ddd;
+        }
+
+        .conclusion {
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-align: justify;
+            transition: color 0.5s ease;
+        }
+
+        .conclusion.dark-mode {
+            color: #ddd;
+        }
+
+        .works-cited {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #333;
+            line-height: 1.7;
+            transition: color 0.5s ease;
+            margin-bottom: 60px;
+        }
+
+        .works-cited.dark-mode {
+            color: #ddd;
+        }
+
+        .works-cited h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #3498db;
+            transition: color 0.5s ease;
+        }
+
+        .works-cited h2.dark-mode {
+            color: #db5534;
+        }
+
+        .works-cited p {
+            margin-bottom: 5px;
+            color: #333;
+            transition: color 0.5s ease;
+        }
+
+        .works-cited p.dark-mode {
+            color: #ddd;
+        }
+
+
+        .works-cited a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.5s ease;
+        }
+
+        .works-cited a:hover {
+            text-decoration: underline;
+        }
+
+        .works-cited a.dark-mode {
+            color: #42a5f5;
+        }
+
+        .author-name{
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: #333;
+            transition: color 0.5s ease;
+        }
+
+        .author-name.dark-mode {
+            color: #ddd;
+        }
+
+        #colorSwitch {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+            z-index: 1000;
+        }
+
+        #colorSwitch:hover {
+            text-decoration: underline;
+        }
+
+        #colorSwitch.dark-mode {
+        }
+
+        #colorSwitch.dark-mode:hover {
+        }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Solar Wind Speed Trends Over the Last 5 Years (2020–2024)</h1>
+        <p class = "author-name">By Mehdi Rahimli</p>
+        <canvas id="solarWindChart"></canvas>
+        <p class="data-source">Source: <a href="https://omniweb.gsfc.nasa.gov/form/dx1.html" target="_blank">OMNIWeb</a></p>
+
+        <section class="description">
+            <h2>Description of Trends</h2>
+            <p>
+                This research report conducts an analysis of the variation in solar wind speed for the
+                five-year period between January 2020 and December 2024. The data used comes from
+                NASA's OMNIWeb service, based on monthly averages of solar wind speed (in km/s).
+                60 data points were used to create a time-series line graph, highlighting the trends
+                and variations over this period.
+            </p>
+            <p>
+                The plot shows a pattern of monthly solar wind velocities ranging from some 330 km/s to
+                approximately 500 km/s, with occasional spikes above 500 km/s. For 2020, the wind
+                velocities were on average lower, typically between 330 km/s and 400 km/s, and thus
+                imply a typically quiet solar wind year. Between 2021 and 2022, there is a consistent
+                increase in solar wind speed with some months as high as 450 km/s.
+            </p>
+            <p>
+                By mid-22, the solar wind velocity displayed more extreme variability, like numerous
+                abrupt increases. This might be indicative of periods of heightened solar activity,
+                possibly associated with solar flares or coronal mass ejections (CMEs). For 2023, the
+                graph registered some of its most elevated readings over the 5-year period, like a major
+                spike at approximately 500 km/s. After this peak, the wind speeds are relatively very
+                high in early 2024 with fluctuating ups and downs before decreasing again somewhat at
+                the end of 2024.
+            </p>
+            <p>
+                The overall trend shows a consistent increase in average solar wind speed between 2020
+                and 2023, with a decline in 2024. However, within this trend, there are many irregular
+                fluctuations, suggesting that solar wind speed is controlled by both long-term solar
+                cycles and short-term solar activity.
+            </p>
+        </section>
+
+        <section class="explanation">
+            <h2>Scientific Explanation</h2>
+            <p>
+                The trend in solar wind speed over the past five years can be explained mostly by the
+                11-year solar cycle, which regulates the increase and decrease of solar activity,
+                including sunspots, solar flares, and CMEs. Solar Cycle 25 started in December 2019,
+                according to NASA, and has been increasing in activity throughout the early 2020s.
+            </p>
+            <p>
+                The sluggish winds during 2020 and early 2021 are consistent with the solar minimum
+                period, when the Sun is at its least active. As the cycle progressed into 2022 and 2023,
+                the solar activity increased, tending to generate more turbulence in the solar
+                atmosphere and faster solar wind streams. These high-energy events are the cause of
+                sudden increases in wind speed, like those depicted by the peaks in the graph.
+            </p>
+            <p>
+                Moreover, the random sequence of peaks and troughs may be the result of high-speed solar
+                wind streams originating in coronal holes within the Sun's surface, or because of the
+                occurrence of transient solar storms. These variations indicate the dynamic and
+                complex character of space weather.
+            </p>
+        </section>
+
+        <section class="conclusion">
+            <h2>Conclusion</h2>
+            <p>
+                The storyline of average solar wind speed during 2020-2024 shows a clear trend of
+                increasing speed in the early part of Solar Cycle 25 with a peak in 2023. This trend
+                is consistent with forecasted increase in solar activity in the middle-phase cycle.
+                The dips and peaks point to the fact that solar wind not only follows the
+                large-scale cycle but also short-scale solar events.
+            </p>
+            <p>
+                An understanding of solar wind activity is required to forecast space weather effects
+                on Earth, such as geomagnetic storms disrupting satellites, communication systems,
+                and power grids. Continuous monitoring will be essential as Solar Cycle 25 moves
+                towards its anticipated peak around 2025.
+            </p>
+        </section>
+
+        <section class="works-cited">
+            <h2 class = "works-cited-header">Works Cited</h2>
+            <p class = "works-cited-content">Data Facility, NASA/GSFC's Space Physics. Nasa, <a href="https://omniweb.gsfc.nasa.gov/">https://omniweb.gsfc.nasa.gov/</a>. Accessed 18 May 2025.</p>
+            <p class = "works-cited-content">Frazier, Sarah. “Strong Flare Erupts from Sun.” NASA Science, 14 May 2025, <a href="https://science.nasa.gov/blogs/solar-cycle-25/2025/05/14/strong-flare-erupts-from-sun-4/">https://science.nasa.gov/blogs/solar-cycle-25/2025/05/14/strong-flare-erupts-from-sun-4/</a>. Accessed 18 May 2025.</p>
+            <p class = "works-cited-content">“Solar Cycle 25 Is Here. NASA, NOAA Scientists Explain What That Means.” NASA, 15 September 2020, <a href="https://www.nasa.gov/news-release/solar-cycle-25-is-here-nasa-noaa-scientists-explain-what-that-means/">https://www.nasa.gov/news-release/solar-cycle-25-is-here-nasa-noaa-scientists-explain-what-that-means/</a>. Accessed 18 May 2025.</p>
+        </section>
+
+        <a id="colorSwitch">Switch to Dark Mode</a>
+
+    </div>
+    <script>
+        const rawData = `
+2020   7  0  368.
+2020  34  0  399.
+2020  61  0  395.
+2020  88  0  389.
+2020 115  0  333.
+2020 142  0  345.
+2020 169  0  340.
+2020 196  0  392.
+2020 223  0  380.
+2020 250  0  401.
+2020 277  0  380.
+2020 304  0  374.
+2020 331  0  378.
+2020 358  0  396.
+2021  19  0  405.
+2021  46  0  453.
+2021  73  0  407.
+2021 100  0  425.
+2021 127  0  380.
+2021 154  0  393.
+2021 181  0  384.
+2021 208  0  385.
+2021 235  0  369.
+2021 262  0  382.
+2021 289  0  421.
+2021 316  0  452.
+2021 343  0  430.
+2022   5  0  433.
+2022  32  0  446.
+2022  59  0  404.
+2022  86  0  464.
+2022 113  0  411.
+2022 140  0  415.
+2022 167  0  448.
+2022 194  0  440.
+2022 221  0  500.
+2022 248  0  438.
+2022 275  0  458.
+2022 302  0  403.
+2022 329  0  461.
+2022 356  0  452.
+2023  18  0  438.
+2023  45  0  487.
+2023  72  0  450.
+2023  99  0  446.
+2023 126  0  466.
+2023 153  0  411.
+2023 180  0  402.
+2023 207  0  410.
+2023 234  0  398.
+2023 261  0  399.
+2023 288  0  439.
+2023 315  0  439.
+2023 342  0  398.
+2024   4  0  381.
+2024  31  0  387.
+2024  58  0  389.
+2024  85  0  425.
+2024 112  0  458.
+2024 139  0  373.
+2024 166  0  390.
+2024 193  0  370.
+2024 220  0  368.
+2024 247  0  408.
+2024 274  0  416.
+2024 301  0  409.
+2024 328  0  404.
+2024 355  0  457.
+`;
+
+        const lines = rawData.trim().split('\n');
+        const dataPoints = lines.map(line => {
+            const parts = line.trim().split(/\s+/);
+            const year = parseInt(parts[0]);
+            const dayOfYear = parseInt(parts[1]);
+            const speed = parseFloat(parts[3]);
+
+            // Create a Date object from year and day of year
+            const date = new Date(year, 0);
+            date.setDate(dayOfYear);
+
+            return { date: date, speed: speed };
+        });
+
+        const chartData = {
+            labels: dataPoints.map(dp => dp.date),
+            datasets: [{
+                label: 'Solar Wind Speed (km/s)',
+                data: dataPoints.map(dp => dp.speed),
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                borderWidth: 1,
+                pointRadius: 3,
+                fill: true,
+            }]
+        };
+
+        const chartOptions = {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'month',
+                        displayFormats: {
+                            month: 'MMM dd'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#333',
+                    },
+                    adapters: {
+                        date: {
+                            format: 'MMM dd'
+                        }
+                    },
+                    ticks: {
+                        color: '#333',
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Solar Wind Speed (km/s)',
+                        color: '#333',
+                    },
+                    ticks: {
+                        color: '#333',
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                },
+                 legend: {
+                    labels: {
+                        color: '#333'
+                    }
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        };
+
+        const ctx = document.getElementById('solarWindChart').getContext('2d');
+        const solarWindChart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: chartOptions
+        });
+
+        const colorSwitch = document.getElementById('colorSwitch');
+        const body = document.body;
+        const container = document.querySelector('.container');
+        const title = document.querySelector('h1');
+        const dataSource = document.querySelector('.data-source');
+        const descriptionSections = document.querySelectorAll('.description');
+        const explanationSections = document.querySelectorAll('.explanation');
+        const conclusionSections = document.querySelectorAll('.conclusion');
+        const worksCitedHeader = document.querySelector('.works-cited-header');
+        const worksCitedContent = document.querySelectorAll('.works-cited-content');
+        const worksCitedLinks = document.querySelectorAll('.works-cited a');
+        const authorName = document.querySelector('.author-name');
+
+
+        let isDarkMode = false;
+
+        colorSwitch.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            body.classList.toggle('dark-mode', isDarkMode);
+            container.classList.toggle('dark-mode', isDarkMode);
+            title.classList.toggle('dark-mode', isDarkMode);
+            dataSource.classList.toggle('dark-mode', isDarkMode);
+            descriptionSections.forEach(section => section.classList.toggle('dark-mode', isDarkMode));
+            explanationSections.forEach(section => section.classList.toggle('dark-mode', isDarkMode));
+            conclusionSections.forEach(section => section.classList.toggle('dark-mode', isDarkMode));
+            worksCitedHeader.classList.toggle('dark-mode', isDarkMode);
+            worksCitedContent.forEach(content => content.classList.toggle('dark-mode', isDarkMode));
+            worksCitedLinks.forEach(link => link.classList.toggle('dark-mode', isDarkMode));
+            authorName.classList.toggle('dark-mode', isDarkMode);
+
+            if (isDarkMode) {
+                colorSwitch.textContent = 'Switch to Light Mode';
+                chartData.datasets[0].borderColor = '#db5534';
+                chartData.datasets[0].backgroundColor = 'rgba(219, 85, 52, 0.2)';
+                solarWindChart.data = chartData;
+
+                chartOptions.scales.x.title.color = '#eee';
+                chartOptions.scales.y.title.color = '#eee';
+                chartOptions.scales.x.ticks.color = '#eee';
+                chartOptions.scales.y.ticks.color = '#eee';
+                chartOptions.plugins.legend.labels.color = '#eee';
+                solarWindChart.options = chartOptions;
+                solarWindChart.update();
+            } else {
+                colorSwitch.textContent = 'Switch to Dark Mode';
+                chartData.datasets[0].borderColor = '#3498db';
+                chartData.datasets[0].backgroundColor = 'rgba(52, 152, 219, 0.2)';
+                solarWindChart.data = chartData;
+
+                chartOptions.scales.x.title.color = '#333';
+                chartOptions.scales.y.title.color = '#333';
+                chartOptions.scales.x.ticks.color = '#333';
+                chartOptions.scales.y.ticks.color = '#333';
+                 chartOptions.plugins.legend.labels.color = '#333';
+                solarWindChart.options = chartOptions;
+                solarWindChart.update();
+            }
+        });
+    </script>
+</body>
+</html>
